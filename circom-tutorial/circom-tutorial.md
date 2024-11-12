@@ -3,15 +3,15 @@
 This tutorial introduces the Circom language and how to use it, along with common pitfalls. We will also explain a significant portion of the circomlib library in order to introduce common design patterns.
 
 ## A note about production use
-Circom is a fantastic tool for learning ZK-SNARKS. However, because it is quite low-level, there are more opportunities to accidentally add subtle bugs. In real applications, programmers should consider using higher [level zero knowledge programming languages](https://www.rareskills.io/post/zero-knowledge-programming-language). You should always get an audit before deploying a smart contract that holds user funds, but this is especially true for [ZK circuits](https://www.rareskills.io/post/arithmetic-circuit), as the attack vectors are less well known.
+Circom is a fantastic tool for learning ZK-SNARKS. However, because it is quite low-level, there are more opportunities to accidentally add subtle bugs. In real applications, programmers should consider using [higher level zero knowledge programming languages](https://www.rareskills.io/post/zero-knowledge-programming-language). You should always get an audit before deploying a smart contract that holds user funds, but this is especially true for [ZK circuits](https://www.rareskills.io/post/arithmetic-circuit), as the attack vectors are less well known.
 
 ## Prerequisites
 Although it is possible to program in Circom without understanding what a [Rank 1 Constraint System](https://www.rareskills.io/post/rank-1-constraint-system) is, you will have a far easier time developing a mental model of the language if you do. Circom is essentially an ergonomic wrapper for creating Rank 1 Constraint Systems.
 
 ## Installation
-Follow the steps here to [install circom](https://iden3.github.io/circom/getting-started/installation/)
+Follow the steps here to [install circom](https://iden3.github.io/circom/getting-started/installation/).
 
-You will also need to install [snarkjs](https://github.com/iden3/snarkjs)
+You will also need to install [snarkjs](https://github.com/iden3/snarkjs).
 
 ```bash
 npm install -g snarkjs@latest
@@ -51,7 +51,7 @@ To convert the circuit to an R1CS, run the following terminal command:
 circom multiply.circom --r1cs --sym
 ```
 
-The `--r1cs` flag tells circom to generate an R1CS file and the `--sym` flag means "save the variable names." That will become clear shortly.
+The `--r1cs` flag tells Circom to generate an R1CS file and the `--sym` flag means "save the variable names." That will become clear shortly.
 
 Two new files are created:
 
@@ -62,13 +62,13 @@ multiply.sym
 
 If you open `multiply.r1cs`, you will see a bunch of binary data, but inside the `.sym` file, you will see the names of the variables.
 
-To read the R1CS file, we use snarkjs as follows:
+To read the R1CS file, we use snarkjs as follows
 
 ```bash
 snarkjs r1cs print multiply.r1cs
 ```
 
-and we will get the following output
+and we will get the following output.
 
 ```
 [INFO]  snarkJS: [ 21888242871839275222246405745257275088548364400416034343698204186575808495616main.a ] * [ main.b ] - [ 21888242871839275222246405745257275088548364400416034343698204186575808495616main.out ] = 0
@@ -81,13 +81,6 @@ Remember, everything is done in a [finite field](https://www.rareskills.io/post/
 ```
 
 With a little algebra, we can see this is equivalent to `a * b = out`, which is our original circuit.
-
-The steps of the algebra are as follows:
-```
--1 * a * b - (-1*out) = 0;
--1 * a * b = -1*out;
-a * b = out;
-```
 
 ## Non quadratic constraints are not allowed!
 A valid R1CS must have exactly one multiplication per constraint (a constraint is a row in R1CS, and `<==` or `===` in Circom). If we try to do two (or more) multiplications, this will fail. All constraints with more than one multiplication need to split into two constraints. Consider the following (non-compiling) example:
@@ -155,10 +148,10 @@ With a little algebra, this translates to
 a * b  = s1
 s1 * c = out
 ```
-And we can see this is encoding the same computation from our circuit.
+and we can see this is encoding the same computation as our circuit.
 
 ## Computing the witness
-Run the following command to create code to generate the witness vector
+Run the following command to create code to generate the witness vector:
 
 ```
 circom multiply.circom --r1cs --sym --wasm
@@ -166,7 +159,7 @@ circom multiply.circom --r1cs --sym --wasm
 
 This will regenerate the R1CS and symbol file, but also create a folder called `multiply_js/`. `cd` to that folder.
 
-Next, we need to create an input.json file in that folder. This is a map from the names of the signals designated input to the value that the prover will supply to them. Let’s set our `input.json` to have the following values:
+Next, we need to create an `input.json` file in that folder. This is a map from the names of the signals designated input to the value that the prover will supply to them. Let’s set our `input.json` to have the following values:
 
 ```json
 {"a": "2","b": "3","c": "5"}
